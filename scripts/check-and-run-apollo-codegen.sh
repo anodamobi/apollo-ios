@@ -19,15 +19,6 @@ are_versions_compatible() {
 [[ "$(cut -d. -f1-2 <<< $1)" == "$(cut -d. -f1-2 <<< $2)" ]]
 }
 
-get_installed_version() {
-version=$(apollo-codegen --version)
-if [[ $? -eq 0 ]]; then
-echo "$version"
-else
-echo "an unknown older version"
-fi
-}
-
 if [[ -z "$CONFIGURATION" ]]; then
 echo "$0 must be invoked as part of an Xcode script phase"
 exit 1
@@ -56,14 +47,6 @@ else
 # Otherwise use a global install
 if ! type "apollo" >/dev/null 2>&1; then
 echo "Can't find apollo. Installing..."
-install_apollo_codegen
-fi
-
-INSTALLED_APOLLO_CODEGEN_VERSION="$(get_installed_version)"
-
-if ! are_versions_compatible $INSTALLED_APOLLO_CODEGEN_VERSION $REQUIRED_APOLLO_CODEGEN_VERSION; then
-echo "The version of Apollo.framework in your project requires apollo-codegen $REQUIRED_APOLLO_CODEGEN_VERSION, \
-but $INSTALLED_APOLLO_CODEGEN_VERSION seems to be installed. Installing..."
 install_apollo_codegen
 fi
 
